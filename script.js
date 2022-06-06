@@ -1,10 +1,37 @@
-// Amirreza Aminian
-
-'use strict' ;
+'use strict';
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiYW1pcnJlemEtYW1pbmlhbjgwODgiLCJhIjoiY2w0MnFjc2d5MHVubzNkbzY0bmZndnB1ZSJ9.P2J3RuurXm_dMFSwDeKc_w";
-var map = new mapboxgl.Map({
-  container: "map",
-  style: "mapbox://styles/mapbox/streets-v11",
+
+
+  // pop-up that says this browser wants to view your location
+
+navigator.geolocation.getCurrentPosition(successLocation, errorLocation, {
+  enableHighAccuracy: true,
 });
+
+function successLocation(position) {
+  setupMap([position.coords.longitude, position.coords.latitude]);
+}
+
+function errorLocation() {
+  setupMap([-2.24, 53.48]);
+}
+
+function setupMap(center) {
+  const map = new mapboxgl.Map({
+    container: "map",
+    style: "mapbox://styles/mapbox/streets-v11",
+    center: center,
+    zoom: 15,
+  });
+
+  const nav = new mapboxgl.NavigationControl();
+  map.addControl(nav);
+
+  var directions = new MapboxDirections({
+    accessToken: mapboxgl.accessToken,
+  });
+
+  map.addControl(directions, "top-left");
+}
